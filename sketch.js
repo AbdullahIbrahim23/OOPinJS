@@ -1,17 +1,32 @@
 let bubbles = [];
 
-function setup() { // built-in P5.JS function -=- this runs once
+
+function setup() {
 	createCanvas(600, 400); 
+	let x = random(width);
+	let y = random(height);
+	let r = random(10, 50);
+	let b = new Bubble(x, y, r)
+	bubbles.push(b);
 }
 
+function mousePressed(){
+	for (let i = 0; i < bubbles.length; i++){
+	bubbles[i].clicked();
+	}
+}
+
+
+/*
 function mouseDragged(){
 	let r = random(10, 50);
 	let b = new Bubble(mouseX, mouseY, r)
 	bubbles.push(b);
 }
+*/
 
-function draw() { // built-in P5.JS function -=-  automatic loop that repeats forever
-	background(0); // give the canvas a black background
+function draw() {
+	background(0);
 	for (let i = 0; i < bubbles.length; i++){
 		bubbles[i].move();
 		bubbles[i].show();	
@@ -25,6 +40,14 @@ class Bubble{
 		this.y = y;
 		this.r = r;
 	}
+	
+	clicked(){
+		let d = dist(mouseX, mouseY, this.x, this.y);
+		if(d < this.r){
+		console.log("CLICKED ON BUBBLE!");
+		}
+	}
+	
 	
 	move(){
 		this.x = this.x + random(-5,5);
