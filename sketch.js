@@ -12,22 +12,18 @@ function setup() {
 
 function mousePressed(){
 	for (let i = 0; i < bubbles.length; i++){
-	bubbles[i].clicked();
+		if (bubbles[i].contains(mouseX, mouseY)){
+			bubbles.splice(i,1);
+		}
 	}
 }
-
-
-/*
-function mouseDragged(){
-	let r = random(10, 50);
-	let b = new Bubble(mouseX, mouseY, r)
-	bubbles.push(b);
-}
-*/
 
 function draw() {
 	background(0);
 	for (let i = 0; i < bubbles.length; i++){
+		if (bubbles[i].contains(mouseX, mouseY)){
+			bubbles[i].changeColor();
+		}
 		bubbles[i].move();
 		bubbles[i].show();	
 	}
@@ -39,12 +35,19 @@ class Bubble{
 		this.x = x;
 		this.y = y;
 		this.r = r;
+		this.brightness = 0;
 	}
 	
-	clicked(){
-		let d = dist(mouseX, mouseY, this.x, this.y);
+	changeColor(){
+		this.brightness = 255;
+	}
+	
+	contains(x ,y){
+		let d = dist(x, y, this.x, this.y);
 		if(d < this.r){
-		console.log("CLICKED ON BUBBLE!");
+		return true;
+		}else{
+			return false;
 		}
 	}
 	
@@ -57,7 +60,7 @@ class Bubble{
 	show() {
 		stroke(255);
 		strokeWeight(4);
-		noFill();
+		fill(this.brightness, 100);
 		ellipse(this.x, this.y, this.r*2, this.r*2);
 	}
 }
