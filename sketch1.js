@@ -2,13 +2,21 @@ let bubbles = [];
 
 
 function setup() {
-	createCanvas(800, 800); 
-	for (let i = 0; i < random(20,30); i++){
+	createCanvas(600, 400); 
+	for (let i = 0; i < 10; i++){
 	let x = random(width);
 	let y = random(height);
 	let r = random(10, 50);
 	let b = new Bubble(x, y, r)
 	bubbles.push(b);
+	}
+}
+
+function mousePressed(){
+	for (let i = 0; i < bubbles.length; i++){
+		if (bubbles[i].contains(mouseX, mouseY)){
+			bubbles.splice(i,1);
+		}
 	}
 }
 
@@ -47,18 +55,8 @@ class Bubble{
 	
 	
 	move(){
-		this.x = this.x + random(-3,3);
-		this.y = this.y + random(7,11);
-		if(this.x > width){
-			this.x = 0;
-		}else if(this.x < 0){
-			this.x = width;
-		}
-		if(this.y > height){
-			this.y = 0;
-		}else if(this.x < 0){
-			this.y = height;
-		}
+		this.x = this.x + random(-5,5);
+		this.y = this.y + random(-5,5);
 	}
 
 	show() {
