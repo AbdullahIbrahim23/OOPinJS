@@ -1,15 +1,14 @@
 let bubbles = [];
 let score = 20;
-
+let ship = {
+x1: 400,
+y1: 700,
+r1: 0
+}
+	
 function setup() {
-	createCanvas(800, 800); 
-	let x1 = 30;
-	let y1 = 75;
-	let x2 = 58;
-	let y2 = 20;
-	let x3 = 86;
-	let y3 = 75;
-	let s = new Ship(x1, y1, x2, y2, x3, y3);
+	createCanvas(800, 800);
+
 	for (let i = 0; i < random(20,30); i++){
 	let x = random(width);
 	let y = random(height);
@@ -19,11 +18,13 @@ function setup() {
 	}
 }
 
+	
 function draw() {
 	background(0);
-	Ship.show();
+	triangle(ship.x1, ship.y1-15, ship.x1-10, ship.y1+15, ship.x1+10, ship.y1+15);
+	moveShip();
 	for (let i = 0; i < bubbles.length; i++){
-		if (bubbles[i].contains(mouseX, mouseY) && bubbles[i].brightness == 0){
+		if (bubbles[i].contains(ship.x1, ship.y1) && bubbles[i].brightness == 0){
 		bubbles[i].changeColor();
 		score-=2;
 		}
@@ -45,8 +46,8 @@ class Bubble{
 	}
 	
 	contains(x ,y){
-		let d = dist(x, y, this.x, this.y);
-		if(d < this.r){
+		let d = dist(x, y, ship.x, ship.y);
+		if(d < ship.r){
 		return true;
 		}else{
 			return false;
@@ -64,7 +65,7 @@ class Bubble{
 		}
 		if(this.y > height){
 			this.y = 0;
-		}else if(this.x < 0){
+		}else if(this.y < 0){
 			this.y = height;
 		}
 	}
@@ -75,25 +76,30 @@ class Bubble{
 		strokeWeight(4);
 		fill(this.brightness, 100);
 		ellipse(this.x, this.y, this.r*2, this.r*2);
-		
 	}
-	
 }
 
-class Ship{
-	constructor(x1, y1, x2, y2, x3, y3){
-		this.x1 = x1;
-		this.y1 = y1;
-		this.x2 = x2;
-		this.y2 = y2;
-		this.x3 = x3;
-		this.y3 = y3;
+function moveShip() {
+	if (keyIsDown(LEFT_ARROW))
+    ship.x1-=5;
+
+	if (keyIsDown(RIGHT_ARROW))
+    ship.x1+=5;
+
+	if (keyIsDown(UP_ARROW))
+    ship.y1-=5;
+
+	if (keyIsDown(DOWN_ARROW))
+    ship.y1+=5;
+
+	if(ship.x1 > width){
+		ship.x1 = 0;
+	}else if(this.x < 0){
+		ship.x1 = width;
 	}
-	
-	show() {
-		stroke(255);
-		strokeWeight(4);
-		fill(this.brightness, 100);
-		triangle(this.x1, this.y1, this.x2, this.y2, this.x3, this.y3);
+	if(ship.y1 > height){
+		ship.y1 = 0;
+	}else if(this.y < 0){
+		ship.y1 = height;
 	}
 }
