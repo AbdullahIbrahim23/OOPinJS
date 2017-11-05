@@ -1,7 +1,7 @@
 let bubbles = [];
+let bullet = [];
 let score = 20;
 let timer = 15;
-let gameState = "Start";
 let ship = {
 x1: 400,
 y1: 700,
@@ -24,10 +24,6 @@ function setup() {
 
 function time(){
 	timer--;
-	if(timer == 0)
-	{
-		gameState = "You win!"
-	}
 }
 
 function draw() {
@@ -44,19 +40,66 @@ function draw() {
 	triangle(ship.x1, ship.y1-15, ship.x1-10, ship.y1+15, ship.x1+10, ship.y1+15);
 	
 	moveShip();
+	shoot();
 	
+	for (let i = 0; i < bullet.length; i++){
+		bullet[i].show();
+		bullet[i].move();
+		if(this.y < height){
+		bullet[i].remove();
+		}
+	}
+		
 	for (let i = 0; i < bubbles.length; i++){
+		if(bubbles[i].contains(bullet.x, bullet.y)){
+			bubbles.splice(i,1);	
+		}
 		if (bubbles[i].contains(ship.x1, ship.y1) && bubbles[i].brightness == 0){
 			bubbles[i].changeColor();
 			score-=2;
-			if(score == 0){
-				gameState = "You lose!"
-			}
 		}
-		bubbles[i].move();
+		
 		bubbles[i].show();
+		bubbles[i].move();
 	}
 	
+}
+
+function moveShip() {
+	if (keyIsDown(LEFT_ARROW))
+    ship.x1-=5;
+
+	if (keyIsDown(RIGHT_ARROW))
+    ship.x1+=5;
+
+	if (keyIsDown(UP_ARROW))
+    ship.y1-=5;
+
+	if (keyIsDown(DOWN_ARROW))
+    ship.y1+=5;
+
+	if(ship.x1 > width){
+		ship.x1 = 0;
+	}else if(ship.x1 < 0){
+		ship.x1 = width;
+	}
+	if(ship.y1 > height){
+		ship.y1 = 0;
+	}else if(this.y < 0){
+		ship.y1 = height;
+	}
+}
+
+function shoot(){
+	let bx = ship.x1;
+	let by = ship.y1-10;
+	let br = 2;
+	if(keyIsDown(32)){
+		for (let i = 0; i < 1; i++){
+		let b1 = new Bullet(bx, by, br);
+		bullet.push(b1);
+		}
+	}
 }
 
 class Bubble{
@@ -68,7 +111,7 @@ class Bubble{
 	}
 	
 	changeColor(){
-		this.brightness = 255;
+		this.brightness = 200;
 	}
 	
 	contains(x ,y){
@@ -79,7 +122,6 @@ class Bubble{
 			return false;
 		}
 	}
-	
 	
 	move(){
 		this.x = this.x + random(-3,3);
@@ -105,28 +147,28 @@ class Bubble{
 	}
 }
 
-
-function moveShip() {
-	if (keyIsDown(LEFT_ARROW))
-    ship.x1-=5;
-
-	if (keyIsDown(RIGHT_ARROW))
-    ship.x1+=5;
-
-	if (keyIsDown(UP_ARROW))
-    ship.y1-=5;
-
-	if (keyIsDown(DOWN_ARROW))
-    ship.y1+=5;
-
-	if(ship.x1 > width){
-		ship.x1 = 0;
-	}else if(this.x < 0){
-		ship.x1 = width;
+class Bullet{
+	constructor(bx, by, br){
+		this.x = bx;
+		this.y = by;
+		this.r = br;
+		this.brightness = 255;
 	}
-	if(ship.y1 > height){
-		ship.y1 = 0;
-	}else if(this.y < 0){
-		ship.y1 = height;
+	
+	remove(){
+		bullet.splice(i,1)
+	}
+	
+	move(){
+		this.y = this.y -5;
+	}
+	
+	show(){
+		stroke(255);
+		strokeWeight(4);
+		fill(this.brightness, 100);
+		ellipse(this.x, this.y, this.r*2, this.r*2);
 	}
 }
+
+
