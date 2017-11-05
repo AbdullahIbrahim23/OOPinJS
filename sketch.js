@@ -1,14 +1,18 @@
 let bubbles = [];
 let score = 20;
+let timer = 15;
+let gameState = "Start";
 let ship = {
 x1: 400,
 y1: 700,
 r1: 0
 }
-	
+
 function setup() {
 	createCanvas(800, 800);
-
+	
+	setInterval(time, 1000)
+	
 	for (let i = 0; i < random(20,30); i++){
 	let x = random(width);
 	let y = random(height);
@@ -18,19 +22,41 @@ function setup() {
 	}
 }
 
-	
+function time(){
+	timer--;
+	if(timer == 0)
+	{
+		gameState = "You win!"
+	}
+}
+
 function draw() {
 	background(0);
+	
+	textSize(32);
+	textAlign(LEFT);
+	fill(250, 100, 180);
+	text("Score: "+ score, 10, 30);
+	fill(0, 200, 150);
+	text("Timer: "+ timer, 10, 65);
+	
+	fill(255, 25, 25);
 	triangle(ship.x1, ship.y1-15, ship.x1-10, ship.y1+15, ship.x1+10, ship.y1+15);
+	
 	moveShip();
+	
 	for (let i = 0; i < bubbles.length; i++){
 		if (bubbles[i].contains(ship.x1, ship.y1) && bubbles[i].brightness == 0){
-		bubbles[i].changeColor();
-		score-=2;
+			bubbles[i].changeColor();
+			score-=2;
+			if(score == 0){
+				gameState = "You lose!"
+			}
 		}
 		bubbles[i].move();
 		bubbles[i].show();
 	}
+	
 }
 
 class Bubble{
@@ -46,8 +72,8 @@ class Bubble{
 	}
 	
 	contains(x ,y){
-		let d = dist(x, y, ship.x, ship.y);
-		if(d < ship.r){
+		let d = dist(x, y, this.x, this.y);
+		if(d < this.r){
 		return true;
 		}else{
 			return false;
@@ -78,6 +104,7 @@ class Bubble{
 		ellipse(this.x, this.y, this.r*2, this.r*2);
 	}
 }
+
 
 function moveShip() {
 	if (keyIsDown(LEFT_ARROW))
