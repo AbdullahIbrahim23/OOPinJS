@@ -12,6 +12,7 @@ function setup() {
 	createCanvas(800, 800);
 	
 	setInterval(time, 1000)
+	setInterval(shoot, 300)
 	
 	for (let i = 0; i < random(20,30); i++){
 	let x = random(width);
@@ -40,25 +41,17 @@ function draw() {
 	triangle(ship.x1, ship.y1-15, ship.x1-10, ship.y1+15, ship.x1+10, ship.y1+15);
 	
 	moveShip();
-	shoot();
 	
 	for (let i = 0; i < bullet.length; i++){
 		bullet[i].show();
 		bullet[i].move();
-		if(this.y < height){
-		bullet[i].remove();
-		}
 	}
 		
 	for (let i = 0; i < bubbles.length; i++){
-		if(bubbles[i].contains(bullet.x, bullet.y)){
-			bubbles.splice(i,1);	
-		}
 		if (bubbles[i].contains(ship.x1, ship.y1) && bubbles[i].brightness == 0){
 			bubbles[i].changeColor();
 			score-=2;
 		}
-		
 		bubbles[i].show();
 		bubbles[i].move();
 	}
@@ -85,23 +78,21 @@ function moveShip() {
 	}
 	if(ship.y1 > height){
 		ship.y1 = 0;
-	}else if(this.y < 0){
+	}else if(ship.y1 < 0){
 		ship.y1 = height;
 	}
 }
 
 function shoot(){
-	let bx = ship.x1;
-	let by = ship.y1-10;
-	let br = 2;
 	if(keyIsDown(32)){
-		for (let i = 0; i < 1; i++){
+		let bx = ship.x1;
+		let by = ship.y1-10;
+		let br = 2;
 		let b1 = new Bullet(bx, by, br);
 		bullet.push(b1);
-		}
 	}
 }
-
+	
 class Bubble{
 	constructor(x, y, r){
 		this.x = x;
@@ -154,13 +145,11 @@ class Bullet{
 		this.r = br;
 		this.brightness = 255;
 	}
-	
-	remove(){
-		bullet.splice(i,1)
-	}
-	
 	move(){
 		this.y = this.y -5;
+		if(this.y < 0){
+		bullet.splice(0,1);
+		}
 	}
 	
 	show(){
