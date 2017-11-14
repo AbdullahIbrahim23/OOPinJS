@@ -1,11 +1,11 @@
 let bubbles = [];
 let bullet = [];
-let score = 20;
-let timer = 15;
+let health = 20;
+let timer = 999;
+let gameState = "title";
 let ship = {
 x1: 400,
 y1: 700,
-r1: 0
 }
 
 function setup() {
@@ -20,42 +20,102 @@ function setup() {
 	let r = random(10, 50);
 	let b = new Bubble(x, y, r)
 	bubbles.push(b);
+	} 
+}
+
+function draw() {
+	if(gameState == "win"){
+		gameWon();
+	}else if(gameState == "lose"){	
+		gameLost();
 	}
+	else{
+		play();
+	}
+}
+
+function gameLost(){
+	background(0);
+	textSize(50);
+	textAlign(CENTER);
+	fill(250, 100, 180);
+	text("YOU LOSE!", width/2, height/2);
+}
+
+function gameWon(){
+	background(255);
+	textSize(50);
+	textAlign(CENTER);
+	fill(250, 100, 180);
+	text("YOU WIN!", width/2, height/2);
+}
+
+function play(){
+	background(0);
+	healthAndTimer();
+	drawShip();
+	moveShip();
+	shipLoop();
+	bubbleTouchingShip();
+	winOrLose();
+ }
+
+function winOrLose(){
+	if(health <= 0){
+		gameState = "lose";
+	}
+	else if(health > 0 && timer == 0){
+		gameState = "win";
+	}
+}
+
+function bubbleTouchingShip(){
+		for (let i = 0; i < bubbles.length; i++){
+		target = bubbles[i];
+		if (bubbles[i].contains(ship.x1, ship.y1) && bubbles[i].brightness == 0){
+			bubbles[i].changeColor();
+			health-=2;
+		}
+		bubbles[i].show();
+		bubbles[i].move();
+		checkForCollision(i);
+	}
+}
+
+
+function checkForCollision(target){
+	for (let i=bullet.length-1; i>=0; i--){
+		if (bubbles[target].contains(bullet[i].x, bullet[i].y)){
+			bubbles.splice(target,1);
+			bullet.splice(i,1);
+			health+=1;
+		}
+	}
+}
+
+function shipLoop(){
+	for (let i = 0; i < bullet.length; i++){
+		bullet[i].show();
+		bullet[i].move();
+	}
+}
+
+function drawShip(){
+	fill(255, 25, 25);
+	triangle(ship.x1, ship.y1-15, ship.x1-10, ship.y1+15, ship.x1+10, ship.y1+15);
 }
 
 function time(){
 	timer--;
 }
 
-function draw() {
-	background(0);
-	
+function healthAndTimer(){
 	textSize(32);
 	textAlign(LEFT);
 	fill(250, 100, 180);
-	text("Score: "+ score, 10, 30);
+	text("Health: "+ health, 10, 30);
 	fill(0, 200, 150);
 	text("Timer: "+ timer, 10, 65);
-	
-	fill(255, 25, 25);
-	triangle(ship.x1, ship.y1-15, ship.x1-10, ship.y1+15, ship.x1+10, ship.y1+15);
-	
-	moveShip();
-	
-	for (let i = 0; i < bullet.length; i++){
-		bullet[i].show();
-		bullet[i].move();
-	}
-		
-	for (let i = 0; i < bubbles.length; i++){
-		if (bubbles[i].contains(ship.x1, ship.y1) && bubbles[i].brightness == 0){
-			bubbles[i].changeColor();
-			score-=2;
-		}
-		bubbles[i].show();
-		bubbles[i].move();
-	}
-	
 }
 
 function moveShip() {
