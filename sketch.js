@@ -1,7 +1,7 @@
 let bubbles = [];
 let bullet = [];
 let health = 20;
-let timer = 999;
+let timer = 30;
 let gameState = "title";
 let ship = {
 x1: 400,
@@ -12,9 +12,9 @@ function setup() {
 	createCanvas(800, 800);
 	
 	setInterval(time, 1000)
-	setInterval(shoot, 300)
+	setInterval(shoot, 500)
 	
-	for (let i = 0; i < random(20,30); i++){
+	for (let i = 0; i < 15; i++){
 	let x = random(width);
 	let y = random(height);
 	let r = random(10, 50);
@@ -70,12 +70,12 @@ function winOrLose(){
 }
 
 function bubbleTouchingShip(){
-		for (let i = 0; i < bubbles.length; i++){
-		target = bubbles[i];
+		for(let i = 0; i < bubbles.length; i++){
 		if (bubbles[i].contains(ship.x1, ship.y1) && bubbles[i].brightness == 0){
 			bubbles[i].changeColor();
 			health-=2;
 		}
+		target = bubbles[i];
 		bubbles[i].show();
 		bubbles[i].move();
 		checkForCollision(i);
